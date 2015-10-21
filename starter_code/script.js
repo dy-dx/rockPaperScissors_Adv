@@ -5,7 +5,8 @@ var currentUserPokemon = null;
 var currentAiPokemon = null;
 
 
-function Pokemon (name, type, attackName) {
+function Pokemon (owner, name, type, attackName) {
+    this.owner = owner;
     this.name = name;
     this.type = type;
     this.attackName = attackName;
@@ -36,7 +37,7 @@ Pokemon.prototype.attack = function (enemy) {
 
     var damage = damageTypes[effectiveness];
 
-    var message = this.name + ' used ' + this.attackName + '!';
+    var message = this.owner + '\'s ' + this.name + ' used ' + this.attackName + '!';
     if (effectiveness === 'superEffective') {
         message += ' It\'s super effective!';
     } else if (effectiveness === 'notEffective') {
@@ -49,13 +50,13 @@ Pokemon.prototype.attack = function (enemy) {
 
 
 function setupGame() {
-    userTeam.push(new Pokemon('Squirtle', 'water', 'Water Gun'));
-    userTeam.push(new Pokemon('Bulbasaur', 'grass', 'Vine Whip'));
-    userTeam.push(new Pokemon('Charmander', 'fire', 'Ember'));
+    userTeam.push(new Pokemon('User', 'Squirtle', 'water', 'Water Gun'));
+    userTeam.push(new Pokemon('User', 'Bulbasaur', 'grass', 'Vine Whip'));
+    userTeam.push(new Pokemon('User', 'Charmander', 'fire', 'Ember'));
 
-    aiTeam.push(new Pokemon('Squirtle', 'water', 'Water Gun'));
-    aiTeam.push(new Pokemon('Bulbasaur', 'grass', 'Vine Whip'));
-    aiTeam.push(new Pokemon('Charmander', 'fire', 'Ember'));
+    aiTeam.push(new Pokemon('Ai', 'Squirtle', 'water', 'Water Gun'));
+    aiTeam.push(new Pokemon('Ai', 'Bulbasaur', 'grass', 'Vine Whip'));
+    aiTeam.push(new Pokemon('Ai', 'Charmander', 'fire', 'Ember'));
 
     tick();
 }
