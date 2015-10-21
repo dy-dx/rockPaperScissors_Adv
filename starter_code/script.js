@@ -108,6 +108,11 @@ function displayTeamStatus() {
     }
 }
 
+function delayTick(ms) {
+    ms = ms || 300;
+    setTimeout(tick, ms);
+}
+
 function tick() {
 
     if (!currentAiPokemon) {
@@ -120,7 +125,7 @@ function tick() {
         }
     } else if (currentAiPokemon.hp <= 0) {
         currentAiPokemon = null;
-        return tick();
+        return delayTick(800);
     }
 
     displayTeamStatus();
@@ -130,7 +135,7 @@ function tick() {
         return;
     } else if (currentUserPokemon.hp <= 0) {
         currentUserPokemon = null;
-        return tick();
+        return delayTick(800);
     }
 
     displayTeamStatus();
@@ -138,7 +143,7 @@ function tick() {
     if (currentUserPokemon && currentAiPokemon) {
         currentUserPokemon.attack(currentAiPokemon);
         currentAiPokemon.attack(currentUserPokemon);
-        tick();
+        delayTick();
     }
 }
 
