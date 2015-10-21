@@ -13,36 +13,42 @@
   <body>
 
     <div class="container">
+      <div id="currentUserPokemon" class="user pokemon-active"></div>
+      <div id="currentAiPokemon" class="ai pokemon-active"></div>
     </div>
 
     <div class="container">
-      <div id="currentUserPokemon" class="user pokemon-active"></div>
-      <div id="currentAiPokemon" class="ai pokemon-active"></div>
-
-      <div>
-        Your Pokemon's HP: <span id='userPokemonHP'></span>
+      <div class="pokemon-status">
+        HP: <span id='userPokemonHP'></span>
+        <div class='hp-bar' id='userPokemonHPBar'><div class='hp-bar-fill'></div></div>
       </div>
-      <div>
-        AI Pokemon's HP: <span id='aiPokemonHP'></span>
-      </div>
-    </div>
-
-    <div class="container user team-container">
-      <p> Your Team: </p>
-      <div id="userTeam">
-        <!--
-        <div class="pokemon selectable">
-        </div>
-        -->
+      <div class="pokemon-status">
+        HP: <span id='aiPokemonHP'></span>
+        <div class='hp-bar' id='aiPokemonHPBar'><div class='hp-bar-fill'></div></div>
       </div>
     </div>
-    <div class="container ai team-container">
-      <p> AI Team: </p>
-      <div id="aiTeam">
-        <!--
-        <div class="pokemon selectable">
+    
+
+    <div class="container">
+      <div class="teams-container">
+        <div class="user team-container">
+          <p> Your Team: </p>
+          <div id="userTeam">
+            <!--
+            <div class="pokemon selectable">
+            </div>
+            -->
+          </div>
         </div>
-        -->
+        <div class="ai team-container">
+          <p> AI Team: </p>
+          <div id="aiTeam">
+            <!--
+            <div class="pokemon selectable">
+            </div>
+            -->
+          </div>
+        </div>
       </div>
     </div>
 

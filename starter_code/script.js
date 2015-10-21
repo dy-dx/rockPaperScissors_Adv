@@ -15,6 +15,8 @@ function Pokemon (owner, name, type, attackName) {
 }
 
 Pokemon.prototype.faint = function () {
+    this.hp = 0;
+    log(this.owner + '\'s ' + this.name + ' fainted!');
 };
 
 Pokemon.prototype.takeDamage = function (damage) {
@@ -23,8 +25,7 @@ Pokemon.prototype.takeDamage = function (damage) {
     } 
     this.hp -= damage;
     if (this.hp <= 0) {
-        this.hp = 0;
-        log(this.owner + '\'s ' + this.name + ' fainted!');
+        this.faint();
     }
 };
 
@@ -72,9 +73,9 @@ function setupGame() {
     userTeam.push(new Pokemon('User', 'Bulbasaur', 'grass', 'Vine Whip'));
     userTeam.push(new Pokemon('User', 'Charmander', 'fire', 'Ember'));
 
-    aiTeam.push(new Pokemon('Ai', 'Squirtle', 'water', 'Water Gun'));
-    aiTeam.push(new Pokemon('Ai', 'Bulbasaur', 'grass', 'Vine Whip'));
-    aiTeam.push(new Pokemon('Ai', 'Charmander', 'fire', 'Ember'));
+    aiTeam.push(new Pokemon('AI', 'Squirtle', 'water', 'Water Gun'));
+    aiTeam.push(new Pokemon('AI', 'Bulbasaur', 'grass', 'Vine Whip'));
+    aiTeam.push(new Pokemon('AI', 'Charmander', 'fire', 'Ember'));
 
     tick();
 }
@@ -87,12 +88,18 @@ function displayTeamStatus() {
     for (var i = 0; i < userTeam.length; i++) {
         var pokemon = userTeam[i];
         var $pokemonElement = $('<div class="pokemon">' + pokemon.name + ' (' + pokemon.hp + 'hp)' + '</div>');
+        if (pokemon.hp <= 0) {
+            $pokemonElement.addClass('dead');
+        }
         $('#userTeam').append($pokemonElement);
     }
 
     for (var j = 0; j < userTeam.length; j++) {
         var pokemon = userTeam[j];
         var $pokemonElement = $('<div class="pokemon">' + pokemon.name + ' (' + pokemon.hp + 'hp)' + '</div>');
+        if (pokemon.hp <= 0) {
+            $pokemonElement.addClass('dead');
+        }
         $('#aiTeam').append($pokemonElement);
     }
 
@@ -100,16 +107,18 @@ function displayTeamStatus() {
     if (currentUserPokemon) {
         $('#currentUserPokemon').text(currentUserPokemon.name);
         $('#userPokemonHP').text(currentUserPokemon.hp);
+        $('#userPokemonHPBar .hp-bar-fill').css('width', currentUserPokemon.hp + '%');
     }
 
     if (currentAiPokemon) {
         $('#currentAiPokemon').text(currentAiPokemon.name);
         $('#aiPokemonHP').text(currentAiPokemon.hp);
+        $('#aiPokemonHPBar .hp-bar-fill').css('width', currentAiPokemon.hp + '%');
     }
 }
 
 function delayTick(ms) {
-    ms = ms || 300;
+    ms = ms || 400;
     setTimeout(tick, ms);
 }
 
@@ -138,13 +147,13 @@ function tick() {
         return delayTick(800);
     }
 
-    displayTeamStatus();
 
     if (currentUserPokemon && currentAiPokemon) {
         currentUserPokemon.attack(currentAiPokemon);
         currentAiPokemon.attack(currentUserPokemon);
         delayTick();
     }
+    displayTeamStatus();
 }
 
 function showUserPokemonSelection() {
