@@ -1,59 +1,164 @@
-var userPoint = 0;
-var aiPoint = 0;
+var userTeam = [];
+var aiTeam = [];
 
-// This function returns the selection of the computer
-function getAISelection() {
-    //TODO: randomly choose between 'rock', 'paper', or 'scissors'
-    var options = ['rock', 'paper', 'scissors'];
-    return options[Math.floor(Math.random()*3)];
+var currentUserPokemon = null;
+var currentAiPokemon = null;
+
+
+function Pokemon (name, type, attackName) {
+    this.name = name;
+    this.type = type;
+    this.attackName = attackName;
+
+    this.hp = 100;
 }
 
-// This function picks the winner
-function pickWinner(userValue, aiValue) {
-    //TODO: pick the correct winner: user or ai
-    //TODO: Add one point for the winner
+Pokemon.prototype.attack = function (enemy) {
     var counters = {
-        rock: 'scissors',
-        paper: 'rock',
-        scissors: 'paper'
+        fire: 'grass',
+        water: 'fire',
+        grass: 'water'
     };
 
-    if (userValue === aiValue) {
-        return 'draw';
-    } else if (counters[userValue] === aiValue) {
-        userPoint++;
-        return 'user';
-    } else if (counters[aiValue] === userValue) {
-        aiPoint++;
-        return 'ai';
+    var damageTypes = {
+        notEffective: 10,
+        neutral: 20,
+        superEffective: 30
+    };
+
+
+    var effectiveness = 'neutral';
+    if (counters[this.type] === enemy.type) {
+        effectiveness = 'superEffective';
+    } else if (counters[enemy.type] === this.type) {
+        effectiveness = 'notEffective';
+    }
+
+    var damage = damageTypes[effectiveness];
+
+    var message = this.name + ' used ' + this.attackName + '!';
+    if (effectiveness === 'superEffective') {
+        message += ' It\'s super effective!';
+    } else if (effectiveness === 'notEffective') {
+        message += ' It\'s not very effective...';
+    }
+    log(message);
+
+    enemy.hp -= damage;
+};
+
+
+function setupGame() {
+    userTeam.push(new Pokemon('Squirtle', 'water', 'Water Gun'));
+    userTeam.push(new Pokemon('Bulbasaur', 'grass', 'Vine Whip'));
+    userTeam.push(new Pokemon('Charmander', 'fire', 'Ember'));
+
+    aiTeam.push(new Pokemon('Squirtle', 'water', 'Water Gun'));
+    aiTeam.push(new Pokemon('Bulbasaur', 'grass', 'Vine Whip'));
+    aiTeam.push(new Pokemon('Charmander', 'fire', 'Ember'));
+
+    tick();
+}
+
+
+function displayTeamStatus() {
+    $('#userTeam').empty();
+    $('#aiTeam').empty();
+
+    for (var i = 0; i < userTeam.length; i++) {
+        var pokemon = userTeam[i];
+        var $pokemonElement = $('<div class="pokemon">' + pokemon.name + ' (' + pokemon.hp + 'hp)' + '</div>');
+        $('#userTeam').append($pokemonElement);
+    }
+
+    for (var j = 0; j < userTeam.length; j++) {
+        var pokemon = userTeam[j];
+        var $pokemonElement = $('<div class="pokemon">' + pokemon.name + ' (' + pokemon.hp + 'hp)' + '</div>');
+        $('#aiTeam').append($pokemonElement);
+    }
+
+
+    if (currentUserPokemon) {
+        $('#currentUserPokemon').text(currentUserPokemon.name);
+        $('#userPokemonHP').text(currentUserPokemon.hp);
+    }
+
+    if (currentAiPokemon) {
+        $('#currentAiPokemon').text(currentAiPokemon.name);
+        $('#aiPokemonHP').text(currentAiPokemon.hp);
     }
 }
 
-// This function sets the scoreboard with the correct points
-function setScore() {
-    $('#userPoint').text(userPoint);
-    $('#aiPoint').text(aiPoint);
-}
+function tick() {
 
-// This function captures the click and picks the winner
-function evaluate(evt) {
-    var userValue = evt.target.getAttribute('id');
-    var aiValue = getAISelection();
+    if (!currentAiPokemon) {
+        currentAiPokemon = getAISelection();
+        if (!currentAiPokemon) {
+            log('You Win!');
+            return;
+        } else {
+            log('AI chooses ' + currentAiPokemon.name + '!');
+        }
+    } else if (currentAiPokemon.hp <= 0) {
+        currentAiPokemon = null;
+        return tick();
+    }
 
-    var winner = pickWinner(userValue, aiValue);
-    setScore();
+    displayTeamStatus();
 
-    if ( 'user' === winner ) {
-        $('#message').delay(50).text('You have won!, Click a box to play again');
-    } else if ( winner === 'draw' ) {
-        $('#message').delay(50).text('Draw! Click a box to play again');
-    } else {
-        $('#message').delay(50).text('You have lost!, Click a box to play again');
+    if (!currentUserPokemon) {
+        showUserPokemonSelection();
+        return;
+    } else if (currentUserPokemon.hp <= 0) {
+        currentUserPokemon = null;
+        return tick();
+    }
+
+    displayTeamStatus();
+
+    if (currentUserPokemon && currentAiPokemon) {
+        currentUserPokemon.attack(currentAiPokemon);
+        currentAiPokemon.attack(currentUserPokemon);
+        tick();
     }
 }
+
+function showUserPokemonSelection() {
+    $('#pokemonSelection ul').empty();
+    $('#pokemonSelection').show();
+    for (var i = 0; i < userTeam.length; i++) {
+        if (userTeam[i].hp > 0) {
+            var pokemon = userTeam[i];
+            var $pokemonElement = $('<li class="pokemon selectable">' + pokemon.name + '</li>');
+            $pokemonElement.data('pokemonObject', pokemon);
+            $('#pokemonSelection ul').append($pokemonElement);
+            $pokemonElement.click(function (e) {
+                currentUserPokemon = $(this).data('pokemonObject');
+                $('#pokemonSelection').hide();
+                tick();
+            });
+        }
+    }
+}
+
+function log(message) {
+    $('#battleLog').prepend('<div>' + message + '</div>');
+}
+
+
+function getAISelection() {
+    var selectablePokemon = [];
+    for (var i = 0; i < aiTeam.length; i++) {
+        if (aiTeam[i].hp > 0) {
+            selectablePokemon.push(aiTeam[i]);
+        }
+    }
+    if (!selectablePokemon.length) { return false; }
+    return selectablePokemon[Math.floor(Math.random()*selectablePokemon.length)];
+}
+
 
 // This function runs on page load
 $(document).ready(function(){
-    setScore();
-    $('.token').click(evaluate);
+    setupGame();
 });

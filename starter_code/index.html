@@ -3,37 +3,65 @@
 
   <head>
       <title>
-        <!-- Enter a title for your game here -->
-        Hello RPS
+        Pokemon
       </title>
-      <!-- Link CSS here -->
       <link rel="stylesheet" type="text/css" href="style.css">
-      <!-- Link JQuery here -->
       <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-
-      <!-- Link script.js here -->
       <script type="text/javascript" src="script.js"></script>
   </head>
 
   <body>
 
     <div class="container">
-      <div id="rock" class="token">ROCK</div>
-      <div id="paper" class="token">PAPER</div>
-      <!-- Create Scissors option here -->
-      <div id="scissors" class="token">PAPER</div>
     </div>
 
     <div class="container">
-      <div id="message">
-          Click on your selection
+      <div id="currentUserPokemon" class="pokemon-active"></div>
+      <div id="currentAiPokemon" class="pokemon-active"></div>
+
+      <div>
+        Your Pokemon's HP: <span id='userPokemonHP'></span>
+      </div>
+      <div>
+        AI Pokemon's HP: <span id='aiPokemonHP'></span>
       </div>
     </div>
 
-    <div>
-      User Points: <span id='userPoint'></span>
-      Ai Points: <span id='aiPoint'></span>
+    <div class="container">
+      <p> Your Team: </p>
+      <div id="userTeam">
+        <!--
+        <div class="pokemon selectable">
+        </div>
+        -->
+      </div>
+
+      <p> AI Team: </p>
+      <div id="aiTeam">
+        <!--
+        <div class="pokemon selectable">
+        </div>
+        -->
+      </div>
     </div>
+
+    <div class="container" id="pokemonSelection">
+      <br>
+      <div>
+          Choose a Pokemon
+      </div>
+      <ul>
+
+      </ul>
+    </div>
+
+    <br>
+    <div class="container battle-log-container">
+      <div>Battle Log</div>
+      <br>
+      <div id="battleLog"></div>
+    </div>
+
 
   </body>
 
