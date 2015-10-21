@@ -22,7 +22,15 @@ Pokemon.prototype.faint = function () {
 Pokemon.prototype.takeDamage = function (damage) {
     if (this.hp <= 0) {
         return;
-    } 
+    }
+    if (this.$element) {
+        this.$element.jrumble();
+        this.$element.trigger('startRumble');
+        var self = this;
+        setTimeout(function () {
+            self.$element.trigger('stopRumble');
+        }, 200);
+    }
     this.hp -= damage;
     if (this.hp <= 0) {
         this.faint();
@@ -94,8 +102,8 @@ function displayTeamStatus() {
         $('#userTeam').append($pokemonElement);
     }
 
-    for (var j = 0; j < userTeam.length; j++) {
-        var pokemon = userTeam[j];
+    for (var j = 0; j < aiTeam.length; j++) {
+        var pokemon = aiTeam[j];
         var $pokemonElement = $('<div class="pokemon">' + pokemon.name + ' (' + pokemon.hp + 'hp)' + '</div>');
         if (pokemon.hp <= 0) {
             $pokemonElement.addClass('dead');
@@ -105,12 +113,14 @@ function displayTeamStatus() {
 
 
     if (currentUserPokemon) {
+        currentUserPokemon.$element = $('#currentUserPokemon');
         $('#currentUserPokemon').text(currentUserPokemon.name);
         $('#userPokemonHP').text(currentUserPokemon.hp);
         $('#userPokemonHPBar .hp-bar-fill').css('width', currentUserPokemon.hp + '%');
     }
 
     if (currentAiPokemon) {
+        currentAiPokemon.$element = $('#currentAiPokemon');
         $('#currentAiPokemon').text(currentAiPokemon.name);
         $('#aiPokemonHP').text(currentAiPokemon.hp);
         $('#aiPokemonHPBar .hp-bar-fill').css('width', currentAiPokemon.hp + '%');
@@ -118,7 +128,7 @@ function displayTeamStatus() {
 }
 
 function delayTick(ms) {
-    ms = ms || 400;
+    ms = ms || 600;
     setTimeout(tick, ms);
 }
 
@@ -157,6 +167,7 @@ function tick() {
 }
 
 function showUserPokemonSelection() {
+    $('#currentUserPokemon').empty();
     $('#pokemonSelection ul').empty();
     $('#pokemonSelection').show();
     for (var i = 0; i < userTeam.length; i++) {
