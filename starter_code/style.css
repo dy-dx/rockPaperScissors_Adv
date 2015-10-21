@@ -1,3 +1,13 @@
+a {
+    text-decoration: none;
+    color: #0000EE;
+}
+a:visited {
+    color:  #0000EE;
+}
+a:hover {
+    text-decoration: underline;
+}
 .container { 
     width: 800px;
     width: 800px;
@@ -11,14 +21,25 @@
     width: 32%; 
     border: 1px solid blue; 
     margin-left: 1px;
-    float:left;
+    float: left;
     text-align: center;
     padding: 50px 0px 50px 0px;
     font-size: x-large;
 }
+.pokemon-active.ai {
+    border-color: red;
+}
 .battle-log-container {
     text-align: center;
 }
+
+.user {
+    color: blue
+}
+.ai {
+    color: red;
+}
+
 #pokemonSelection {
     display: none;
     font-weight: bold;

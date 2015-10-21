@@ -14,7 +14,25 @@ function Pokemon (owner, name, type, attackName) {
     this.hp = 100;
 }
 
+Pokemon.prototype.faint = function () {
+};
+
+Pokemon.prototype.takeDamage = function (damage) {
+    if (this.hp <= 0) {
+        return;
+    } 
+    this.hp -= damage;
+    if (this.hp <= 0) {
+        this.hp = 0;
+        log(this.owner + '\'s ' + this.name + ' fainted!');
+    }
+};
+
 Pokemon.prototype.attack = function (enemy) {
+    if (this.hp <= 0) {
+        return;
+    }
+
     var counters = {
         fire: 'grass',
         water: 'fire',
@@ -45,7 +63,7 @@ Pokemon.prototype.attack = function (enemy) {
     }
     log(message);
 
-    enemy.hp -= damage;
+    enemy.takeDamage(damage);
 };
 
 
@@ -130,10 +148,11 @@ function showUserPokemonSelection() {
     for (var i = 0; i < userTeam.length; i++) {
         if (userTeam[i].hp > 0) {
             var pokemon = userTeam[i];
-            var $pokemonElement = $('<li class="pokemon selectable">' + pokemon.name + '</li>');
+            var $pokemonElement = $('<li class="pokemon selectable"><a href="#">' + pokemon.name + '</a></li>');
             $pokemonElement.data('pokemonObject', pokemon);
             $('#pokemonSelection ul').append($pokemonElement);
             $pokemonElement.click(function (e) {
+                e.preventDefault();
                 currentUserPokemon = $(this).data('pokemonObject');
                 $('#pokemonSelection').hide();
                 tick();
